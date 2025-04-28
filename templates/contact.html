@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | NKay's Motors</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <nav class="landing-nav">
+        <div class="nav-brand">
+            <img src="https://cdn-icons-png.flaticon.com/512/1388/1388966.png" alt="Logo">
+            <span>NKay's Motors</span>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('landing') }}">Home</a>
+            <a href="{{ url_for('features') }}">Features</a>
+            <a href="{{ url_for('contact') }}">Contact</a>
+            <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+        </div>
+    </nav>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                <div class="info-card">
+                    <div class="info-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/684/684809.png" alt="Address">
+                    </div>
+                    <h3>Visit Us</h3>
+                    <p>123 Luxury Avenue<br>Motor City, MC 12345</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/126/126341.png" alt="Phone">
+                    </div>
+                    <h3>Call Us</h3>
+                    <p>+233 54 441 3873 <br>Mon-Fri: 9AM - 7PM GMT</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/561/561188.png" alt="Email">
+                    </div>
+                    <h3>Email Us</h3>
+                    <p>contact@nkaymotors.com<br>support@nkaymotors.com</p>
+                </div>
+            </div>
+
+            <div class="contact-form">
+                <h2>Send a Message</h2>
+                <form method="POST" action="{{ url_for('contact') }}">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="subject" placeholder="Subject" required>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
