@@ -13,27 +13,49 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///cars.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Email configuration
-app.config['MAIL_SERVER'] = 'smtp.example.com'  # Your SMTP server
+app.config['MAIL_SERVER'] = 'smtp.example.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'your_email@example.com'  # Your email
-app.config['MAIL_PASSWORD'] = 'your_email_password'     # Your email password
-app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'  # Default sender
+app.config['MAIL_USERNAME'] = 'your_email@example.com'
+app.config['MAIL_PASSWORD'] = 'your_email_password'
+app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
 
 db = SQLAlchemy(app)
+mail = Mail(app)
 
+# Database Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reservations = db.relationship('Reservation', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf-8'), self.password_hash.encode('utf-8'))
+
+class Vehicle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    make = db.Column(db.String(50), nullable=False)
+    model = db.Column(db.String(50), nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    vin = db.Column(db.String(17), unique=True, nullable=False)
+    status = db.Column(db.String(20), default='Available')
+    price = db.Column(db.Float, nullable=False)
+    mileage = db.Column(db.Integer, nullable=False)
+    image_url = db.Column(db.String(200))
+    reservations = db.relationship('Reservation', backref='vehicle', lazy=True)
+
+class Reservation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'), nullable=False)
+    reservation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(20), default='Pending')
 
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,6 +64,104 @@ class PasswordResetToken(db.Model):
     expires_at = db.Column(db.DateTime, nullable=False)
     used = db.Column(db.Boolean, default=False)
 
+# Create database tables
+with app.app_context():
+    db.create_all()
+
+# Routes
+@app.route('/total-vehicles')
+def total_vehicles():
+    if 'user_id' not in session:
+        flash('Please login to view this page', 'danger')
+        return redirect(url_for('login'))
+    
+    # Get paginated vehicles
+    page = request.args.get('page', 1, type=int)
+    vehicles = Vehicle.query.paginate(page=page, per_page=10)
+    
+    return render_template('vehicles.html',
+                         title='Total Vehicles',
+                         vehicles=vehicles)
+
+@app.route('/available-vehicles')
+def available_vehicles():
+    if 'user_id' not in session:
+        flash('Please login to view this page', 'danger')
+        return redirect(url_for('login'))
+    
+    page = request.args.get('page', 1, type=int)
+    vehicles = Vehicle.query.filter_by(status='Available').paginate(page=page, per_page=10)
+    return render_template('vehicles.html', 
+                         title='Available Vehicles',
+                         vehicles=vehicles)
+
+@app.route('/reservations')
+def reservations():
+    if 'user_id' not in session:
+        flash('Please login to view this page', 'danger')
+        return redirect(url_for('login'))
+    
+    page = request.args.get('page', 1, type=int)
+    reservations = Reservation.query.filter_by(user_id=session['user_id']).paginate(page=page, per_page=10)
+    return render_template('reservations.html',
+                         reservations=reservations)
+
+@app.route('/vehicle/<int:id>')
+def vehicle_details(id):
+    if 'user_id' not in session:
+        flash('Please login to view this page', 'danger')
+        return redirect(url_for('login'))
+    
+    vehicle = Vehicle.query.get_or_404(id)
+    return render_template('vehicle_details.html', vehicle=vehicle)
+
+@app.route('/book/<int:vehicle_id>', methods=['POST'])
+def book_vehicle(vehicle_id):
+    if 'user_id' not in session:
+        flash('Please login to book a vehicle', 'danger')
+        return redirect(url_for('login'))
+    
+    vehicle = Vehicle.query.get_or_404(vehicle_id)
+    if vehicle.status != 'Available':
+        flash('This vehicle is not available for booking', 'warning')
+        return redirect(url_for('vehicle_details', id=vehicle_id))
+    
+    new_reservation = Reservation(
+        user_id=session['user_id'],
+        vehicle_id=vehicle_id,
+        status='Pending'
+    )
+    
+    try:
+        vehicle.status = 'Reserved'
+        db.session.add(new_reservation)
+        db.session.commit()
+        flash('Reservation request submitted successfully!', 'success')
+    except:
+        db.session.rollback()
+        flash('Error processing reservation request', 'danger')
+    
+    return redirect(url_for('vehicle_details', id=vehicle_id))
+
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        flash('Please login to access the dashboard', 'danger')
+        return redirect(url_for('login'))
+    
+    user = User.query.get(session['user_id'])
+    
+    # Get counts
+    total_vehicles_count = Vehicle.query.count()
+    available_vehicles_count = Vehicle.query.filter_by(status='Available').count()
+    reservations_count = Reservation.query.count()
+    
+    return render_template('dashboard.html',
+                         username=user.username,
+                         total_vehicles=total_vehicles_count,
+                         available_vehicles=available_vehicles_count,
+                         reservations_count=reservations_count)
 # Create database tables
 with app.app_context():
     db.create_all()
@@ -100,15 +220,6 @@ def login():
     
     # GET request handling
     return render_template('login.html')
-
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        flash('Please login to access the dashboard', 'danger')
-        return redirect(url_for('login'))
-    
-    user = User.query.get(session['user_id'])
-    return render_template('dashboard.html', username=user.username)
 
 
 @app.route('/logout')
@@ -206,6 +317,7 @@ def signup():
 @app.route('/success')
 def success():
     return "Login Successful!"
+
 
 if __name__ == '__main__':
     app.run(debug=True)

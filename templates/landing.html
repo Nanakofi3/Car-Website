@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NKay's Motors</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
     <nav class="landing-nav">
         <div class="nav-brand">
@@ -14,8 +16,8 @@
         </div>
         <div class="nav-links">
             <a href="{{ url_for('landing') }}">Home</a>
-            <a href="#features">Features</a>
-            <a href="#contact">Contact</a>
+            <a href="features">Features</a>
+            <a href="contact">Contact</a>
             <a href="{{ url_for('login') }}" class="login-btn">Login</a>
         </div>
     </nav>
@@ -52,4 +54,5 @@
         </div>
     </section>
 </body>
+
 </html>

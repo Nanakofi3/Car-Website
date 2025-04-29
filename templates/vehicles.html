@@ -1,0 +1,90 @@
+<!-- templates/vehicles.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} | NKay's Motors</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body class="dashboard-page">
+    {% include 'dashboard.html' %}
+
+    <div class="detailed-content">
+      <div class="dashboard-card">
+        <div class="header-section">
+          <h2>{{ title }}</h2>
+          <div class="filters">
+            <select class="filter-select">
+              <option>Filter by Status</option>
+              <option>Available</option>
+              <option>Reserved</option>
+              <option>Sold</option>
+            </select>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search vehicles..."
+            />
+            <button class="filter-btn">Apply Filters</button>
+          </div>
+        </div>
+
+        <div class="vehicle-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Vehicle Details</th>
+                <th>Price</th>
+                <th>Mileage</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sample Data - Replace with actual data from database -->
+              <tr class="vehicle-row">
+                <td>
+                  <img
+                    src="https://images.unsplash.com/photo-1580273916550-e323be2ae537"
+                    alt="Vehicle Image"
+                    class="table-image"
+                  />
+                </td>
+                <td>
+                  <h3>2020 BMW M5 Competition</h3>
+                  <p>VIN: WBS73CH0507P12345</p>
+                  <p>4.4L V8 Engine | Automatic</p>
+                  <p>5,000 miles | Black Sapphire Metallic</p>
+                </td>
+                <td>$89,999</td>
+                <td>12,345 mi</td>
+                <td><span class="status-available">Available</span></td>
+                <td>
+                  <button class="action-btn view-btn">View Details</button>
+                  <button class="action-btn book-btn">Book Now</button>
+                </td>
+              </tr>
+              <!-- Add more rows dynamically from database -->
+            </tbody>    </table>
+        </div>
+        
+
+        <div class="pagination">
+          <span class="page-info">Showing 1-10 of 15 vehicles</span>
+          <div class="page-controls">
+            <button class="page-btn">Previous</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

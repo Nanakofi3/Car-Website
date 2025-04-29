@@ -37,7 +37,7 @@
                     <div class="vehicle-item">
                         <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Car">
                         <div class="vehicle-info">
-                            <h3>2024 Luxury Sedan</h3>
+                            <h3>2020 BMW M5 </h3>
                             <p>VIN: 1ABCD23EFGH456789</p>
                             <p>Status: Available</p>
                         </div>
@@ -46,18 +46,27 @@
             </div>
 
             <div class="dashboard-stats">
-                <div class="stat-card">
-                    <h3>Total Vehicles</h3>
-                    <p class="stat-value">15</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Available Now</h3>
-                    <p class="stat-value">8</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Reservations</h3>
-                    <p class="stat-value">5</p>
-                </div>
+                <a href="{{ url_for('total_vehicles') }}" class="stat-link">
+                    <div class="stat-card">
+                        <h3>Total Vehicles</h3>
+                        <p class="stat-value">15</p>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('available_vehicles') }}" class="stat-link">
+                    <div class="stat-card">
+                        <h3>Available Now</h3>
+                        <p class="stat-value">8</p>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('reservations') }}" class="stat-link">
+                    <div class="stat-card">
+                        <h3>Reservations</h3>
+                        <p class="stat-value">5</p>
+                        
+                    </div>
+                </a>
             </div>
         </div>
     </div>
