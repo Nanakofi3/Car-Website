@@ -27,52 +27,18 @@
         <div class="container">
             <h2>Vehicle Reservation Request</h2>
             <form method="POST" action="{{ url_for('reservations') }}">
-                {{ form.hidden_tag() }}  <!-- CSRF protection -->
+                {{ form.hidden_tag() }}
                 
                 <div class="form-section">
                     <h3>Personal Information</h3>
                     <div class="form-group">
                         {{ form.full_name.label }}
-                        {{ form.full_name(class="form-control", placeholder="Nana kay") }}
+                        {{ form.full_name(class="form-control") }}
                     </div>
-                    <div class="form-group">
-                        {{ form.email.label }}
-                        {{ form.email(class="form-control", placeholder="nkaymotors@example.com") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.phone.label }}
-                        {{ form.phone(class="form-control", placeholder="+233 54 441 3873") }}
-                    </div>
+                    <!-- Repeat for other fields -->
                 </div>
-
-                <div class="form-section">
-                    <h3>Reservation Details</h3>
-                    <div class="form-group">
-                        {{ form.vehicle_type.label }}
-                        {{ form.vehicle_type(class="form-select") }}
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {{ form.pickup_date.label }}
-                                {{ form.pickup_date(class="form-control", type="date") }}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {{ form.return_date.label }}
-                                {{ form.return_date(class="form-control", type="date") }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        {{ form.special_requests.label }}
-                        {{ form.special_requests(class="form-control", rows="4", 
-                            placeholder="Additional requirements...") }}
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit Reservation</button>
+                
+                <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
             </form>
         </div>
     </section>

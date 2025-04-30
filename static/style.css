@@ -125,7 +125,7 @@
                 min-height: 100vh;
                 margin: 0;
                 padding: 0;
-                display: contents;
+                display: revert;
                 
 }
 
@@ -205,6 +205,12 @@ body {
     margin-bottom: 1rem;
 }
 
+
+.brand-header h1 {
+   color: #2c3e50;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
 h1 {
     color: white;
     font-size: 1.8rem;
@@ -565,7 +571,7 @@ input[type="email"] {
 }
 
 .contact-info h2, .contact-form h2 {
-    color: #2c3e50;
+    color: white;
     margin-bottom: 2rem;
 }
 

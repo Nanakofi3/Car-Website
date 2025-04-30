@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, SelectField, TextAreaField, SubmitField
+from wtforms.validators import DataRequired, Email
 import bcrypt
 from datetime import datetime, timedelta
 import secrets
@@ -57,6 +60,20 @@ class Reservation(db.Model):
     reservation_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default='Pending')
 
+class ReservationForm(FlaskForm):
+    full_name = StringField('Full Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone', validators=[DataRequired()])
+    vehicle_type = SelectField('Vehicle Type', choices=[
+        ('sedan', 'Sedan'), 
+        ('suv', 'SUV'), 
+        ('truck', 'Truck')
+    ], validators=[DataRequired()])
+    pickup_date = DateField('Pickup Date', format='%Y-%m-%d', validators=[DataRequired()])
+    return_date = DateField('Return Date', format='%Y-%m-%d', validators=[DataRequired()])
+    special_requests = TextAreaField('Special Requests')
+    submit = SubmitField('Submit Reservation')
+
 class PasswordResetToken(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -94,17 +111,40 @@ def available_vehicles():
     return render_template('vehicles.html', 
                          title='Available Vehicles',
                          vehicles=vehicles)
-
-@app.route('/reservations')
+@app.route('/reservations', methods=['GET', 'POST'])
 def reservations():
     if 'user_id' not in session:
         flash('Please login to view this page', 'danger')
         return redirect(url_for('login'))
     
+    form = ReservationForm()
+    
+    if form.validate_on_submit():
+        # Process form data
+        new_reservation = Reservation(
+            user_id=session['user_id'],
+            vehicle_id=1,  # You'll need to implement vehicle selection logic
+            reservation_date=datetime.utcnow(),
+            status='Pending'
+        )
+        
+        try:
+            db.session.add(new_reservation)
+            db.session.commit()
+            flash('Reservation submitted successfully!', 'success')
+            return redirect(url_for('reservations'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error submitting reservation', 'danger')
+            app.logger.error(f"Reservation error: {str(e)}")
+    
     page = request.args.get('page', 1, type=int)
     reservations = Reservation.query.filter_by(user_id=session['user_id']).paginate(page=page, per_page=10)
+    
     return render_template('reservations.html',
+                         form=form,  # Pass form to template
                          reservations=reservations)
+
 
 @app.route('/vehicle/<int:id>')
 def vehicle_details(id):
