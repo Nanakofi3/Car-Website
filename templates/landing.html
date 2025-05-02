@@ -1,58 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NKay's Motors</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+ </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NKay's Motors</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
+ <body>
+  <nav class="landing-nav">
+   <div class="nav-brand">
+    <img src="https://cdn-icons-png.flaticon.com/512/1388/1388966.png" alt="Logo" />
+    <span>NKay's Motors</span>
+   </div>
+   <div class="nav-links">
+    <a href="{{ url_for('landing') }}">Home</a>
+    <a href="features">Features</a>
+    <a href="contact">Contact</a>
+    <a href="{{ url_for('login') }}" class="login-btn">Login</a>
+   </div>
+  </nav>
 
-<body>
-    <nav class="landing-nav">
-        <div class="nav-brand">
-            <img src="https://cdn-icons-png.flaticon.com/512/1388/1388966.png" alt="Logo">
-            <span>NKay's Motors</span>
-        </div>
-        <div class="nav-links">
-            <a href="{{ url_for('landing') }}">Home</a>
-            <a href="features">Features</a>
-            <a href="contact">Contact</a>
-            <a href="{{ url_for('login') }}" class="login-btn">Login</a>
-        </div>
-    </nav>
+  <section class="hero">
+   <div class="hero-content">
+    <h1>Experience Luxury Driving</h1>
+    <p>Discover our premium collection of luxury vehicles</p>
+    <div class="cta-buttons">
+     <a href="{{ url_for('login') }}" class="cta-login">Login to Explore</a>
+     <a href="{{ url_for('signup') }}" class="cta-signup">Create Account</a>
+    </div>
+   </div>
+  </section>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Experience Luxury Driving</h1>
-            <p>Discover our premium collection of luxury vehicles</p>
-            <div class="cta-buttons">
-                <a href="{{ url_for('login') }}" class="cta-login">Login to Explore</a>
-                <a href="{{ url_for('signup') }}" class="cta-signup">Create Account</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="features" id="features">
-        <h2>Why Choose Us</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/1534/1534959.png" alt="Premium Cars">
-                <h3>Premium Selection</h3>
-                <p>Curated collection of luxury vehicles</p>
-            </div>
-            <div class="feature-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/929/929648.png" alt="24/7 Support">
-                <h3>24/7 Support</h3>
-                <p>Dedicated concierge service</p>
-            </div>
-            <div class="feature-card">
-                <img src="https://cdn-icons-png.flaticon.com/512/3142/3142023.png" alt="Security">
-                <h3>Full Insurance</h3>
-                <p>Comprehensive coverage included</p>
-            </div>
-        </div>
-    </section>
-</body>
-
+  <section class="features" id="features">
+   <h2>Why Choose Us</h2>
+   <div class="features-grid">
+    <div class="feature-card">
+     <img src="https://cdn-icons-png.flaticon.com/512/1534/1534959.png" alt="Premium Cars" />
+     <h3>Premium Selection</h3>
+     <p>Curated collection of luxury vehicles</p>
+    </div>
+    <div class="feature-card">
+     <img src="https://cdn-icons-png.flaticon.com/512/929/929648.png" alt="24/7 Support" />
+     <h3>24/7 Support</h3>
+     <p>Dedicated concierge service</p>
+    </div>
+    <div class="feature-card">
+     <img src="https://cdn-icons-png.flaticon.com/512/3142/3142023.png" alt="Security" />
+     <h3>Full Insurance</h3>
+     <p>Comprehensive coverage included</p>
+    </div>
+   </div>
+  </section>
+ </body>
 </html>

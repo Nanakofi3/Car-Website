@@ -1,74 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | NKay's Motors</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="dashboard-page">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    
-    <div class="dashboard-container">
-        <nav class="dashboard-nav">
-            <div class="nav-brand">
-                <img src="https://cdn-icons-png.flaticon.com/512/1388/1388966.png" alt="Logo">
-                <h1>NKay's Motors Dashboard</h1>
-            </div>
-            <div class="nav-links">
-                <span>Welcome, {{ username }}</span>
-                <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
-            </div>
-        </nav>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | NKay's Motors</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+ </head>
+ <body class="dashboard-page">
+  {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+  <div class="flash-messages">
+   {% for category, message in messages %}
+   <div class="flash-message {{ category }}">{{ message }}</div>
+   {% endfor %}
+  </div>
+  {% endif %} {% endwith %}
 
-        <div class="dashboard-content">
-            <div class="dashboard-card">
-                <h2>Your Vehicles</h2>
-                <div class="vehicle-list">
-                 <!-- Sample vehicle data  -->
-                    <div class="vehicle-item">
-                        <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Car">
-                        <div class="vehicle-info">
-                            <h3>2020 BMW M5 </h3>
-                            <p>VIN: 1ABCD23EFGH456789</p>
-                            <p>Status: Available</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-stats">
-                <a href="{{ url_for('total_vehicles') }}" class="stat-link">
-                    <div class="stat-card">
-                        <h3>Total Vehicles</h3>
-                        <p class="stat-value">15</p>
-                    </div>
-                </a>
-
-                <a href="{{ url_for('available_vehicles') }}" class="stat-link">
-                    <div class="stat-card">
-                        <h3>Available Now</h3>
-                        <p class="stat-value">8</p>
-                    </div>
-                </a>
-
-                <a href="{{ url_for('reservations') }}" class="stat-link">
-                    <div class="stat-card">
-                        <h3>Reservations</h3>
-                        <p class="stat-value">5</p>
-                        
-                    </div>
-                </a>
-            </div>
-        </div>
+  <div class="dashboard-container">
+   <nav class="dashboard-nav">
+    <div class="nav-brand">
+     <img src="https://cdn-icons-png.flaticon.com/512/1388/1388966.png" alt="Logo" />
+     <h1>NKay's Motors Dashboard</h1>
     </div>
-</body>
+    <div class="nav-links">
+     <span>Welcome, {{ username }}</span>
+     <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+   </nav>
+
+   <div class="dashboard-content">
+    <div class="dashboard-card">
+     <h2>Your Vehicles</h2>
+     <div class="vehicle-list">
+      <!-- Sample vehicle data  -->
+      <div class="vehicle-item">
+       <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Car" />
+       <div class="vehicle-info">
+        <h3>2020 BMW M5</h3>
+        <p>VIN: 1ABCD23EFGH456789</p>
+        <p>Status: Available</p>
+       </div>
+      </div>
+     </div>
+    </div>
+
+    <div class="dashboard-stats">
+     <a href="{{ url_for('total_vehicles') }}" class="stat-link">
+      <div class="stat-card">
+       <h3>Total Vehicles</h3>
+       <p class="stat-value">15</p>
+      </div>
+     </a>
+
+     <a href="{{ url_for('available_vehicles') }}" class="stat-link">
+      <div class="stat-card">
+       <h3>Available Now</h3>
+       <p class="stat-value">8</p>
+      </div>
+     </a>
+
+     <a href="{{ url_for('reservations') }}" class="stat-link">
+      <div class="stat-card">
+       <h3>Reservations</h3>
+       <p class="stat-value">5</p>
+      </div>
+     </a>
+    </div>
+   </div>
+  </div>
+ </body>
 </html>
