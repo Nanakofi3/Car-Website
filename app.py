@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session 
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_mail import Mail, Message
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm
@@ -24,6 +25,7 @@ app.config['MAIL_PASSWORD'] = 'your_email_password'
 app.config['MAIL_DEFAULT_SENDER'] = 'your_email@example.com'
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 mail = Mail(app)
 
 # Database Models
