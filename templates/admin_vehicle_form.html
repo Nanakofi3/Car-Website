@@ -1,0 +1,70 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}{{ 'Add Vehicle' if mode == 'new' else 'Edit Vehicle' }} | NKay's Motors{% endblock %}
+{% block page_title %}{{ 'Add Vehicle' if mode == 'new' else 'Edit Vehicle' }}{% endblock %}
+
+{% block content %}
+<div class="dashboard-card" style="max-width: 640px;">
+ <h2>{{ 'New Vehicle' if mode == 'new' else 'Edit Vehicle Details' }}</h2>
+
+ <form method="POST" action="{{ url_for('admin.new_vehicle') if mode == 'new' else url_for('admin.edit_vehicle', id=vehicle_id) }}" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+  <div class="form-group">
+   <label for="make">Make</label>
+   <input type="text" id="make" name="make" required value="{{ vehicle.make if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="model">Model</label>
+   <input type="text" id="model" name="model" required value="{{ vehicle.model if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="year">Year</label>
+   <input type="number" id="year" name="year" required min="1900" max="2100" value="{{ vehicle.year if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="vin">VIN</label>
+   <input type="text" id="vin" name="vin" required maxlength="17" value="{{ vehicle.vin if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="price">Price (USD)</label>
+   <input type="number" id="price" name="price" required min="0" step="0.01" value="{{ vehicle.price if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="mileage">Mileage</label>
+   <input type="number" id="mileage" name="mileage" required min="0" value="{{ vehicle.mileage if vehicle else '' }}" />
+  </div>
+
+  <div class="form-group">
+   <label for="status">Status</label>
+   <select id="status" name="status">
+    {% set current_status = vehicle.status if vehicle else 'Available' %}
+    <option value="Available" {{ 'selected' if current_status == 'Available' }}>Available</option>
+    <option value="Reserved" {{ 'selected' if current_status == 'Reserved' }}>Reserved</option>
+    <option value="Sold" {{ 'selected' if current_status == 'Sold' }}>Sold</option>
+   </select>
+  </div>
+
+  <div class="form-group">
+   <label for="image">Picture</label>
+   {% if vehicle and vehicle.image_url %}
+   <img src="{{ vehicle.image_url }}" alt="Current photo" style="width: 100%; max-height: 200px; object-fit: cover; margin-bottom: 0.75rem; border: 1px solid var(--border-soft);" />
+   {% endif %}
+   <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp,image/gif" />
+   {% if mode == 'edit' %}
+   <p style="color: var(--text-faint); font-size: 0.78rem; margin-top: 0.5rem; text-transform: none;">Leave empty to keep the current picture.</p>
+   {% endif %}
+  </div>
+
+  <div style="display: flex; gap: 0.75rem;">
+   <button type="submit" class="btn btn-primary">{{ 'Add Vehicle' if mode == 'new' else 'Save Changes' }}</button>
+   <a href="{{ url_for('admin.vehicles') }}" class="btn btn-outline">Cancel</a>
+  </div>
+ </form>
+</div>
+{% endblock %}

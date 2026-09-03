@@ -1,0 +1,55 @@
+{% extends 'admin_base.html' %}
+{% from '_icons.html' import gauge, check_circle, calendar %}
+
+{% block title %}Admin Overview | NKay's Motors{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+<div class="dashboard-card">
+ <h2>Fleet &amp; Reservations</h2>
+ <p style="color: var(--text-muted); margin-top: -0.6rem; text-transform: none;">A snapshot of your inventory and booking activity.</p>
+</div>
+
+<div class="dashboard-stats">
+ <a href="{{ url_for('admin.vehicles') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Total Vehicles</h3>
+   <p class="stat-value">{{ stats.total }}</p>
+  </div>
+ </a>
+ <a href="{{ url_for('admin.vehicles') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Available</h3>
+   <p class="stat-value">{{ stats.available }}</p>
+  </div>
+ </a>
+ <a href="{{ url_for('admin.vehicles') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Reserved</h3>
+   <p class="stat-value">{{ stats.reserved }}</p>
+  </div>
+ </a>
+ <a href="{{ url_for('admin.vehicles') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Sold</h3>
+   <p class="stat-value">{{ stats.sold }}</p>
+  </div>
+ </a>
+ <a href="{{ url_for('admin.reservations') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Total Reservations</h3>
+   <p class="stat-value">{{ stats.reservations }}</p>
+  </div>
+ </a>
+ <a href="{{ url_for('admin.reservations') }}" class="stat-link">
+  <div class="stat-card">
+   <h3>Pending</h3>
+   <p class="stat-value">{{ stats.pending }}</p>
+  </div>
+ </a>
+</div>
+
+<div class="dashboard-card" style="margin-top: 2rem;">
+ <a href="{{ url_for('admin.new_vehicle') }}" class="btn btn-primary">+ Add Vehicle</a>
+</div>
+{% endblock %}

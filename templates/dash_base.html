@@ -1,0 +1,67 @@
+{% from '_icons.html' import car, layout_grid, gauge, check_circle, calendar, logout, sun, moon, search %}
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store, max-age=0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+   (function () {
+    if (localStorage.getItem('theme') === 'dark') {
+     document.documentElement.setAttribute('data-theme', 'dark');
+    }
+   })();
+  </script>
+  <title>{% block title %}NKay's Motors{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  {% block extra_head %}{% endblock %}
+ </head>
+
+ <body class="app-shell">
+  {% include '_flash.html' %}
+
+  <aside class="sidebar">
+   <a href="{{ url_for('main.landing') }}" class="sidebar-brand">
+    <span class="brand-mark">{{ car() }}</span>
+    <span>NKay's Motors</span>
+   </a>
+
+   <nav class="sidebar-nav">
+    <a href="{{ url_for('dashboard.dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard.dashboard' }}">{{ layout_grid() }} Dashboard</a>
+    <a href="{{ url_for('vehicles.browse') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('vehicles.browse') }}">{{ search() }} Browse Fleet</a>
+    <a href="{{ url_for('vehicles.total_vehicles') }}" class="{{ 'active' if request.endpoint == 'vehicles.total_vehicles' }}">{{ gauge() }} All Vehicles</a>
+    <a href="{{ url_for('vehicles.available_vehicles') }}" class="{{ 'active' if request.endpoint == 'vehicles.available_vehicles' }}">{{ check_circle() }} Available Now</a>
+    <a href="{{ url_for('dashboard.reservations') }}" class="{{ 'active' if request.endpoint == 'dashboard.reservations' }}">{{ calendar() }} Reservations</a>
+   </nav>
+
+   <div class="sidebar-footer">
+    {% if current_user and current_user.is_admin %}
+    <a href="{{ url_for('admin.dashboard') }}" style="display: flex; align-items: center; gap: 0.85rem; padding: 0.75rem 0.9rem; color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Admin Panel</a>
+    {% endif %}
+    <a href="{{ url_for('auth.logout') }}" class="logout-btn">{{ logout() }} Logout</a>
+   </div>
+  </aside>
+
+  <div class="main-area">
+   <header class="topbar">
+    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+    <div class="topbar-user">
+     <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle light mode">
+      {{ sun() }}{{ moon() }}
+     </button>
+     <div class="avatar">{{ (current_user.username[0] | upper) if current_user else 'U' }}</div>
+     <span>{{ current_user.username if current_user else 'Account' }}</span>
+    </div>
+   </header>
+
+   <main class="page-content">
+    {% block content %}{% endblock %}
+   </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='theme.js') }}"></script>
+ </body>
+</html>
