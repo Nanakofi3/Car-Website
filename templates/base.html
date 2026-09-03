@@ -1,0 +1,59 @@
+{% from '_icons.html' import car, sun, moon %}
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script>
+   (function () {
+    if (localStorage.getItem('theme') === 'dark') {
+     document.documentElement.setAttribute('data-theme', 'dark');
+    }
+   })();
+  </script>
+  <title>{% block title %}NKay's Motors{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  {% block extra_head %}{% endblock %}
+ </head>
+
+ <body class="{% block body_class %}{% endblock %}">
+  {% include '_flash.html' %}
+
+  {% block nav %}
+  <nav class="landing-nav">
+   <a href="{{ url_for('main.landing') }}" class="nav-brand">
+    <span class="brand-mark">{{ car() }}</span>
+    <span>NKay's Motors</span>
+   </a>
+   <div class="nav-links">
+    <a href="{{ url_for('main.landing') }}">Home</a>
+    <a href="{{ url_for('vehicles.browse') }}">Browse Cars</a>
+    <a href="{{ url_for('main.features') }}">Features</a>
+    <a href="{{ url_for('main.contact') }}">Contact</a>
+    {% if current_user and current_user.is_admin %}
+    <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+    {% endif %}
+    {% if current_user %}
+    <a href="{{ url_for('dashboard.dashboard') }}" class="login-btn">Dashboard</a>
+    {% else %}
+    <a href="{{ url_for('auth.login') }}" class="login-btn">Login</a>
+    {% endif %}
+    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle light mode">
+     {{ sun() }}{{ moon() }}
+    </button>
+   </div>
+  </nav>
+  {% endblock %}
+
+  {% block content %}{% endblock %}
+
+  {% block footer %}
+  <footer class="site-footer">&copy; {{ current_year }} NKay's Motors. All rights reserved.</footer>
+  {% endblock %}
+
+  <script src="{{ url_for('static', filename='theme.js') }}"></script>
+ </body>
+</html>

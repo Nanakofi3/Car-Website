@@ -1,0 +1,76 @@
+{% extends 'admin_base.html' %}
+{% from '_icons.html' import calendar %}
+
+{% block title %}Reservations | NKay's Motors{% endblock %}
+{% block page_title %}Reservations{% endblock %}
+
+{% block content %}
+<div class="detailed-content">
+ <div class="header-section">
+  <h2>All Reservations</h2>
+ </div>
+
+ <div class="reservations-table-wrap">
+  <table>
+   <thead>
+    <tr>
+     <th>Customer</th>
+     <th>Vehicle</th>
+     <th>Requested</th>
+     <th>Status</th>
+     <th>Update</th>
+    </tr>
+   </thead>
+   <tbody>
+    {% for reservation in reservations.items %}
+    <tr class="vehicle-row">
+     <td data-label="Customer">{{ reservation.user.username if reservation.user else 'Unknown' }}</td>
+     <td data-label="Vehicle">{{ reservation.vehicle.year }} {{ reservation.vehicle.make }} {{ reservation.vehicle.model }}</td>
+     <td data-label="Requested">{{ reservation.reservation_date.strftime('%b %d, %Y') }}</td>
+     <td data-label="Status">
+      <span class="status-badge status-{{ 'available' if reservation.status == 'Confirmed' else ('sold' if reservation.status == 'Cancelled' else 'reserved') }}">{{ reservation.status }}</span>
+     </td>
+     <td data-label="Update">
+      <form method="POST" action="{{ url_for('admin.update_reservation_status', id=reservation.id) }}" style="display: flex; gap: 0.5rem;">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+       <select name="status" style="width: auto;">
+        <option value="Pending" {{ 'selected' if reservation.status == 'Pending' }}>Pending</option>
+        <option value="Confirmed" {{ 'selected' if reservation.status == 'Confirmed' }}>Confirmed</option>
+        <option value="Cancelled" {{ 'selected' if reservation.status == 'Cancelled' }}>Cancelled</option>
+       </select>
+       <button type="submit" class="action-btn view-btn">Save</button>
+      </form>
+     </td>
+    </tr>
+    {% else %}
+    <tr>
+     <td colspan="5">
+      <div class="empty-state">
+       <div class="icon-badge">{{ calendar() }}</div>
+       <p>No reservations yet.</p>
+      </div>
+     </td>
+    </tr>
+    {% endfor %}
+   </tbody>
+  </table>
+ </div>
+
+ {% if reservations.pages > 1 %}
+ <div class="pagination">
+  <span class="page-info">Page {{ reservations.page }} of {{ reservations.pages }} &middot; {{ reservations.total }} reservations</span>
+  <div class="page-controls">
+   <a href="{{ url_for('admin.reservations', page=reservations.prev_num) }}" class="page-btn {{ 'disabled' if not reservations.has_prev }}">Previous</a>
+   {% for p in reservations.iter_pages() %}
+    {% if p %}
+    <a href="{{ url_for('admin.reservations', page=p) }}" class="page-btn {{ 'active' if p == reservations.page }}">{{ p }}</a>
+    {% else %}
+    <span class="page-btn">&hellip;</span>
+    {% endif %}
+   {% endfor %}
+   <a href="{{ url_for('admin.reservations', page=reservations.next_num) }}" class="page-btn {{ 'disabled' if not reservations.has_next }}">Next</a>
+  </div>
+ </div>
+ {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from '_vehicle_card.html' import card %}
+{% from '_icons.html' import search %}
+
+{% block title %}Browse Our Fleet | NKay's Motors{% endblock %}
+{% block body_class %}browse-page{% endblock %}
+
+{% block content %}
+<section class="browse-section">
+ <div class="page-header">
+  <h1>Browse Our Fleet</h1>
+  <p>Explore our full inventory and reserve your next drive in minutes.</p>
+ </div>
+
+ <div class="filter-tabs container">
+  <a href="{{ url_for('vehicles.browse', status='all') }}" class="filter-tab {{ 'active' if status == 'all' }}">All</a>
+  <a href="{{ url_for('vehicles.browse', status='Available') }}" class="filter-tab {{ 'active' if status == 'Available' }}">Available</a>
+  <a href="{{ url_for('vehicles.browse', status='Reserved') }}" class="filter-tab {{ 'active' if status == 'Reserved' }}">Reserved</a>
+  <a href="{{ url_for('vehicles.browse', status='Sold') }}" class="filter-tab {{ 'active' if status == 'Sold' }}">Sold</a>
+ </div>
+
+ <div class="vehicle-grid container">
+  {% for vehicle in vehicles.items %}
+  {{ card(vehicle) }}
+  {% else %}
+  <div class="empty-state">
+   <div class="icon-badge">{{ search() }}</div>
+   <p>No vehicles in the fleet yet. Check back soon.</p>
+  </div>
+  {% endfor %}
+ </div>
+
+ {% if vehicles.pages > 1 %}
+ <div class="pagination container">
+  <span class="page-info">Page {{ vehicles.page }} of {{ vehicles.pages }} &middot; {{ vehicles.total }} vehicles</span>
+  <div class="page-controls">
+   <a href="{{ url_for('vehicles.browse', status=status, page=vehicles.prev_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_prev }}">Previous</a>
+   {% for p in vehicles.iter_pages() %}
+    {% if p %}
+    <a href="{{ url_for('vehicles.browse', status=status, page=p) }}" class="page-btn {{ 'active' if p == vehicles.page }}">{{ p }}</a>
+    {% else %}
+    <span class="page-btn">&hellip;</span>
+    {% endif %}
+   {% endfor %}
+   <a href="{{ url_for('vehicles.browse', status=status, page=vehicles.next_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_next }}">Next</a>
+  </div>
+ </div>
+ {% endif %}
+</section>
+{% endblock %}

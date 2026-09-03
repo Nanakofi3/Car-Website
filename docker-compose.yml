@@ -1,0 +1,36 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-carsite}:${POSTGRES_PASSWORD:-carsite}@db:5432/${POSTGRES_DB:-carsite}
+    volumes:
+      - uploads_data:/app/static/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-carsite}
+      POSTGRES_USER: ${POSTGRES_USER:-carsite}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-carsite}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-carsite}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  uploads_data:

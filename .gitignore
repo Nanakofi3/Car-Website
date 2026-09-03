@@ -28,10 +28,16 @@ wheels/
 venv/
 env/
 ENV/
+.env
 .env/
 .venv/
 env.bak/
 venv.bak/
+
+# Instance data
+instance/
+*.db
+static/uploads/
 
 # IDE specific files
 .idea/

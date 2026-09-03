@@ -1,23 +1,14 @@
-{% extends 'dash_base.html' %}
+{% extends 'admin_base.html' %}
 {% from '_icons.html' import search %}
 
-{% block title %}{{ title }} | NKay's Motors{% endblock %}
-{% block page_title %}{{ title }}{% endblock %}
+{% block title %}Manage Vehicles | NKay's Motors{% endblock %}
+{% block page_title %}Vehicles{% endblock %}
 
 {% block content %}
 <div class="detailed-content">
  <div class="header-section">
-  <h2>{{ title }}</h2>
-  <div class="filters">
-   <select class="filter-select">
-    <option>Filter by Status</option>
-    <option>Available</option>
-    <option>Reserved</option>
-    <option>Sold</option>
-   </select>
-   <input type="text" class="search-input" placeholder="Search vehicles..." />
-   <button class="filter-btn">Apply Filters</button>
-  </div>
+  <h2>Fleet Inventory</h2>
+  <a href="{{ url_for('admin.new_vehicle') }}" class="btn btn-primary">+ Add Vehicle</a>
  </div>
 
  <div class="vehicle-table">
@@ -25,7 +16,7 @@
    <thead>
     <tr>
      <th>Image</th>
-     <th>Vehicle Details</th>
+     <th>Vehicle</th>
      <th>Price</th>
      <th>Mileage</th>
      <th>Status</th>
@@ -38,7 +29,7 @@
      <td data-label="Image">
       <img src="{{ vehicle.image_url or 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=600&auto=format&fit=crop' }}" alt="{{ vehicle.make }} {{ vehicle.model }}" class="table-image" />
      </td>
-     <td data-label="Details">
+     <td data-label="Vehicle">
       <h3>{{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }}</h3>
       <p>VIN: {{ vehicle.vin }}</p>
      </td>
@@ -48,13 +39,11 @@
       <span class="status-badge status-{{ vehicle.status | lower }}">{{ vehicle.status }}</span>
      </td>
      <td data-label="Actions">
-      <a href="{{ url_for('vehicles.vehicle_details', id=vehicle.id) }}" class="action-btn view-btn">View Details</a>
-      {% if vehicle.status == 'Available' %}
-      <form method="POST" action="{{ url_for('vehicles.book_vehicle', vehicle_id=vehicle.id) }}" style="display: inline;">
+      <a href="{{ url_for('admin.edit_vehicle', id=vehicle.id) }}" class="action-btn view-btn">Edit</a>
+      <form method="POST" action="{{ url_for('admin.delete_vehicle', id=vehicle.id) }}" style="display: inline;" onsubmit="return confirm('Remove {{ vehicle.year }} {{ vehicle.make }} {{ vehicle.model }} from the fleet? This also deletes its reservations.');">
        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-       <button type="submit" class="action-btn book-btn">Book Now</button>
+       <button type="submit" class="action-btn delete-btn">Delete</button>
       </form>
-      {% endif %}
      </td>
     </tr>
     {% else %}
@@ -62,7 +51,8 @@
      <td colspan="6">
       <div class="empty-state">
        <div class="icon-badge">{{ search() }}</div>
-       <p>No vehicles found in this list yet.</p>
+       <p>No vehicles in the fleet yet.</p>
+       <a href="{{ url_for('admin.new_vehicle') }}" class="btn btn-primary" style="margin-top: 1rem;">+ Add Vehicle</a>
       </div>
      </td>
     </tr>
@@ -73,17 +63,17 @@
 
  {% if vehicles.pages > 1 %}
  <div class="pagination">
-  <span class="page-info">Showing page {{ vehicles.page }} of {{ vehicles.pages }} &middot; {{ vehicles.total }} vehicles</span>
+  <span class="page-info">Page {{ vehicles.page }} of {{ vehicles.pages }} &middot; {{ vehicles.total }} vehicles</span>
   <div class="page-controls">
-   <a href="{{ url_for(request.endpoint, page=vehicles.prev_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_prev }}">Previous</a>
+   <a href="{{ url_for('admin.vehicles', page=vehicles.prev_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_prev }}">Previous</a>
    {% for p in vehicles.iter_pages() %}
     {% if p %}
-    <a href="{{ url_for(request.endpoint, page=p) }}" class="page-btn {{ 'active' if p == vehicles.page }}">{{ p }}</a>
+    <a href="{{ url_for('admin.vehicles', page=p) }}" class="page-btn {{ 'active' if p == vehicles.page }}">{{ p }}</a>
     {% else %}
     <span class="page-btn">&hellip;</span>
     {% endif %}
    {% endfor %}
-   <a href="{{ url_for(request.endpoint, page=vehicles.next_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_next }}">Next</a>
+   <a href="{{ url_for('admin.vehicles', page=vehicles.next_num) }}" class="page-btn {{ 'disabled' if not vehicles.has_next }}">Next</a>
   </div>
  </div>
  {% endif %}
